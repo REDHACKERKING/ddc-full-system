@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก | NexoraShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #050b18;
+            --card: rgba(15, 23, 42, 0.8);
+        }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg);
+            color: #ffffff;
+            background-image: radial-gradient(circle at 50% 50%, rgba(112, 0, 255, 0.15) 0%, transparent 70%);
+            min-height: screen;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-field {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+            outline: none;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .btn-register:hover {
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.4);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .floating-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Background Orbs -->
+    <div class="floating-orb bg-cyan-500 top-0 left-0"></div>
+    <div class="floating-orb bg-purple-600 bottom-0 right-0"></div>
+
+    <div class="max-w-md w-full">
+        <!-- Logo Section -->
+        <div class="text-center mb-8">
+            <a href="index.php" class="text-3xl font-bold font-orbitron tracking-tighter text-cyan-400">
+                NEXORA<span class="text-white">SHOP</span>
+            </a>
+            <p class="text-slate-500 text-xs mt-2 uppercase tracking-[0.2em]">Create New Account</p>
+        </div>
+
+        <!-- Register Card -->
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+            
+            <h2 class="text-2xl font-bold mb-6 text-center font-orbitron">REGISTER</h2>
+
+            <form action="process_register.php" method="POST" class="space-y-5">
+                <!-- Username -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">ชื่อผู้ใช้งาน (Username)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-slate-500">👤</span>
+                        <input type="text" name="username" required
+                               class="input-field w-full pl-11 pr-4 py-3 rounded-xl text-sm" 
+                               placeholder="ระบุชื่อผู้ใช้งาน...">
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">อีเมล (Email)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-slate-500">📧</span>
+                        <input type="email" name="email" required
+                               class="input-field w-full pl-11 pr-4 py-3 rounded-xl text-sm" 
+                               placeholder="example@mail.com">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">รหัสผ่าน (Password)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-slate-500">🔒</span>
+                        <input type="password" name="password" required
+                               class="input-field w-full pl-11 pr-4 py-3 rounded-xl text-sm" 
+                               placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">ยืนยันรหัสผ่าน (Confirm Password)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-slate-500">🛡️</span>
+                        <input type="password" name="confirm_password" required
+                               class="input-field w-full pl-11 pr-4 py-3 rounded-xl text-sm" 
+                               placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="flex items-center gap-3 py-2">
+                    <input type="checkbox" id="terms" required class="w-4 h-4 accent-cyan-400 bg-slate-900 border-slate-700">
+                    <label for="terms" class="text-[10px] text-slate-400">ฉันยอมรับ <a href="#" class="text-cyan-400 underline">เงื่อนไขการใช้งาน</a> และนโยบายความเป็นส่วนตัว</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-register w-full py-4 rounded-xl font-bold font-orbitron tracking-widest text-sm mt-2">
+                    SIGN UP NOW
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <div class="mt-8 text-center border-t border-white/5 pt-6">
+                <p class="text-xs text-slate-500">มีบัญชีอยู่แล้ว? 
+                    <a href="login.php" class="text-cyan-400 font-bold hover:underline ml-1">เข้าสู่ระบบที่นี่</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-6">
+            <a href="index.php" class="text-[10px] font-bold text-slate-600 hover:text-white transition uppercase tracking-widest">
+                ← กลับสู่หน้าหลัก
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
