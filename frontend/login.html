@@ -5,7 +5,7 @@
 <button onclick=login()>Login</button>
 <script>
 function login(){
-fetch("https://ddc-backend-cen0.onrender.com/",{
+fetch("https://ddc-backend-cen0.onrender.com/api/login",{
 method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({username:u.value,password:p.value})
 }).then(r=>r.json()).then(d=>{
