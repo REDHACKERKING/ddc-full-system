@@ -1,0 +1,13 @@
+
+<h2>Register</h2>
+<input id=u placeholder=username>
+<input id=p type=password placeholder=password>
+<button onclick=reg()>Register</button>
+<script>
+function reg(){
+fetch("http://localhost:3000/api/register",{
+method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username:u.value,password:p.value})
+}).then(()=>location.href="login.html");
+}
+</script>
