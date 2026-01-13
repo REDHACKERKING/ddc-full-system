@@ -222,10 +222,10 @@ $credits = $isLoggedIn ? 500 : 0;
             <h3 class="text-2xl font-orbitron font-bold text-white mb-2 uppercase tracking-tight">เข้าสู่ระบบ</h3>
             <p class="text-slate-400 text-sm mb-8">กรุณาเข้าสู่ระบบหรือสมัครสมาชิกก่อนทำรายการเพื่อรับสิทธิพิเศษมากมาย</p>
             <div class="flex flex-col gap-3">
-                <button onclick="location.href='login.php'" class="btn-action w-full py-3 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg">
+                <button onclick="location.href='login.html'" class="btn-action w-full py-3 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg">
                     เข้าสู่ระบบตอนนี้
                 </button>
-                <button onclick="location.href='register.php'" class="btn-outline w-full py-3 rounded-xl font-bold uppercase tracking-widest text-sm text-cyan-400">
+                <button onclick="location.href='register.html'" class="btn-outline w-full py-3 rounded-xl font-bold uppercase tracking-widest text-sm text-cyan-400">
                     สมัครสมาชิกใหม่
                 </button>
                 <button onclick="closeAuthModal()" class="mt-2 text-slate-500 hover:text-white transition text-xs font-bold uppercase">
@@ -256,8 +256,8 @@ $credits = $isLoggedIn ? 500 : 0;
                 </div>
                 <button class="w-10 h-10 rounded-full bg-slate-800 border border-cyan-500/30 flex items-center justify-center">👤</button>
             <?php else: ?>
-                <button onclick="location.href='login.php'" class="text-slate-300 hover:text-white px-3 py-2 text-xs font-bold uppercase transition">Login</button>
-                <button onclick="location.href='register.php'" class="btn-action px-5 py-2 rounded-lg font-bold text-xs uppercase shadow-lg">Register</button>
+                <button onclick="location.href='login.html'" class="text-slate-300 hover:text-white px-3 py-2 text-xs font-bold uppercase transition">Login</button>
+                <button onclick="location.href='register.html'" class="btn-action px-5 py-2 rounded-lg font-bold text-xs uppercase shadow-lg">Register</button>
             <?php endif; ?>
         </div>
     </div>
