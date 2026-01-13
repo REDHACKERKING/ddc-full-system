@@ -9,7 +9,7 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DDC STORE | Gaming Solutions & Services</title>
+    <title>NexoraShop | Gaming Solutions & Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,18 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
             filter: brightness(1.1);
         }
 
+        /* Package Selection Styles */
+        .package-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .package-card.active {
+            border-color: var(--primary);
+            background: rgba(0, 242, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
         /* Lucky Wheel Styles */
         .wheel-container {
             position: relative;
@@ -84,11 +96,78 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
 </head>
 <body class="min-h-screen">
 
+<script>
+    const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
+
+    function checkAuth(action) {
+        if (!isLoggedIn) {
+            window.location.href = 'login.php';
+            return false;
+        }
+        if (action) action();
+        return true;
+    }
+
+    // ข้อมูลแพ็กเกจเกมตัวอย่าง
+    const gamePackages = {
+        'rov': [
+            { id: 1, name: '16 คูปอง', price: 20 },
+            { id: 2, name: '42 คูปอง', price: 50 },
+            { id: 3, name: '84 คูปอง', price: 100 },
+            { id: 4, name: '257 คูปอง', price: 300 },
+            { id: 5, name: '435 คูปอง', price: 500 }
+        ],
+        'ff': [
+            { id: 6, name: '70 เพชร', price: 35 },
+            { id: 7, name: '210 เพชร', price: 100 },
+            { id: 8, name: '530 เพชร', price: 250 },
+            { id: 9, name: '1080 เพชร', price: 500 }
+        ],
+        'genshin': [
+            { id: 10, name: '60 Genesis Crystals', price: 35 },
+            { id: 11, name: '300+30 Genesis Crystals', price: 175 },
+            { id: 12, name: '980+110 Genesis Crystals', price: 525 },
+            { id: 13, name: 'Blessing of the Welkin Moon', price: 175 }
+        ],
+        'pubg': [
+            { id: 14, name: '60 UC', price: 35 },
+            { id: 15, name: '325 UC', price: 175 },
+            { id: 16, name: '660 UC', price: 350 }
+        ]
+    };
+
+    let selectedPackage = null;
+
+    function updatePackages() {
+        const game = document.getElementById('game-select').value;
+        const container = document.getElementById('package-list');
+        container.innerHTML = '';
+        selectedPackage = null;
+
+        if (gamePackages[game]) {
+            gamePackages[game].forEach(pkg => {
+                const div = document.createElement('div');
+                div.className = 'package-card bg-slate-900/50 p-3 rounded-xl text-center';
+                div.innerHTML = `
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">${pkg.name}</p>
+                    <p class="text-sm font-orbitron text-cyan-400">${pkg.price} ฿</p>
+                `;
+                div.onclick = () => {
+                    document.querySelectorAll('.package-card').forEach(c => c.classList.remove('active'));
+                    div.classList.add('active');
+                    selectedPackage = pkg;
+                };
+                container.appendChild(div);
+            });
+        }
+    }
+</script>
+
 <!-- Navigation -->
 <nav class="fixed w-full z-50 px-4 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center glass-card rounded-2xl px-6 py-3 border-b border-cyan-500/20">
         <div class="flex items-center gap-3">
-            <span class="text-2xl font-bold font-orbitron tracking-tighter text-cyan-400">DDC<span class="text-white">STORE</span></span>
+            <span class="text-2xl font-bold font-orbitron tracking-tighter text-cyan-400">NEXORA<span class="text-white">SHOP</span></span>
         </div>
         
         <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
@@ -114,8 +193,86 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
 
 <!-- Hero Section -->
 <section class="pt-32 pb-16 px-6 text-center">
-    <h1 class="text-4xl md:text-6xl font-orbitron font-bold mb-4">ONE-STOP <span class="text-cyan-400">GAMING</span> HUB</h1>
-    <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base">เลือกซื้อไอดีเกม เติมเงินมือถือ หรือเช่าเซิร์ฟเวอร์ประสิทธิภาพสูง ครบจบในที่เดียว</p>
+    <h1 class="text-4xl md:text-6xl font-orbitron font-bold mb-4 uppercase tracking-tighter">ONE-STOP <span class="text-cyan-400">GAMING</span> HUB</h1>
+    <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base italic">" ทุกบริการเกมมิ่ง ครบ จบ ในที่เดียว ด้วยระบบอัตโนมัติ 24 ชม. โดย NexoraShop "</p>
+</section>
+
+<!-- Top-up & Server Section -->
+<section class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Updated Top-up Card -->
+    <div id="topup" class="glass-card rounded-[2.5rem] p-8 border-t-4 border-purple-500 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-400">🎮</div>
+            <h3 class="text-xl font-orbitron font-bold text-purple-400 uppercase tracking-widest">Game Top-up</h3>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- Step 1: Account Info -->
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">1. ข้อมูลบัญชีผู้ใช้</label>
+                <input type="text" placeholder="ระบุ UID หรือ ชื่อตัวละคร" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 transition">
+            </div>
+
+            <!-- Step 2: Select Game -->
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">2. เลือกเกมที่ต้องการเติม</label>
+                <select id="game-select" onchange="updatePackages()" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none">
+                    <option value="" disabled selected>เลือกเกม...</option>
+                    <option value="rov">Garena RoV</option>
+                    <option value="ff">Garena Free Fire</option>
+                    <option value="genshin">Genshin Impact</option>
+                    <option value="pubg">PUBG Mobile</option>
+                </select>
+            </div>
+
+            <!-- Step 3: Packages -->
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">3. เลือกแพ็กเกจเติมเงิน</label>
+                <div id="package-list" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <p class="col-span-full text-center text-slate-600 py-4 text-xs italic">กรุณาเลือกเกมก่อน...</p>
+                </div>
+            </div>
+
+            <button onclick="checkAuth()" class="w-full btn-action py-4 rounded-xl font-bold uppercase tracking-[0.2em] shadow-lg text-sm">
+                ชำระเงินทันที
+            </button>
+            <p class="text-[10px] text-center text-slate-500 italic">* ระบบจะทำรายการภายใน 1-3 นาที หลังจากชำระเงินสำเร็จ</p>
+        </div>
+    </div>
+
+    <!-- DDC Server Card -->
+    <div id="server" class="glass-card rounded-[2.5rem] p-8 border-t-4 border-cyan-400">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center text-cyan-400">💻</div>
+                <h3 class="text-xl font-orbitron font-bold text-cyan-400 uppercase tracking-widest">DDC Server</h3>
+            </div>
+            <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full border border-emerald-500/30">ONLINE</span>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-slate-900/50 p-5 rounded-2xl flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition cursor-pointer">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-tighter">DDC Lite Node</p>
+                    <p class="text-[10px] text-slate-500">2 vCPU / 4GB RAM / 40GB SSD</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-orbitron font-bold text-lg">250 ฿</p>
+                </div>
+            </div>
+            <div class="bg-slate-900/50 p-5 rounded-2xl flex items-center justify-between border border-cyan-400/30 bg-cyan-400/5 hover:scale-[1.02] transition cursor-pointer">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-tighter text-cyan-400">DDC Pro Gaming</p>
+                    <p class="text-[10px] text-slate-500">4 vCPU / 16GB RAM / 100GB SSD</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-orbitron font-bold text-lg">750 ฿</p>
+                </div>
+            </div>
+            <button onclick="checkAuth()" class="w-full border border-cyan-500/30 hover:bg-cyan-500/10 py-4 rounded-xl font-bold uppercase tracking-widest transition text-xs mt-4">
+                ปรับแต่งสเปกตามความต้องการ
+            </button>
+        </div>
+    </div>
 </section>
 
 <!-- ID Shop Section -->
@@ -123,12 +280,11 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
     <div class="flex justify-between items-end mb-8">
         <div>
             <h2 class="text-2xl font-orbitron font-bold uppercase tracking-wider text-cyan-400">ID Game Shop</h2>
-            <p class="text-slate-500 text-xs">ไอดีสะอาด ปลอดภัย รับประกันการดึงคืน</p>
+            <p class="text-slate-500 text-xs">ไอดีสะอาด ปลอดภัย รับประกันจาก NexoraShop</p>
         </div>
         <a href="#" class="text-xs font-bold text-slate-400 hover:text-white underline">ดูทั้งหมด</a>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <!-- Item 1 -->
         <div class="glass-card rounded-2xl overflow-hidden group">
             <div class="h-40 bg-slate-800 relative overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=400&q=80" alt="Game ID" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
@@ -136,80 +292,23 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
             </div>
             <div class="p-4">
                 <h4 class="font-bold text-sm mb-1 uppercase">Valorant - Ascendant II</h4>
-                <p class="text-[10px] text-slate-500 mb-3">Skins: Vandal Elderflame, Phantom Oni...</p>
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mt-3">
                     <span class="font-orbitron font-bold text-cyan-400">1,250 ฿</span>
-                    <button class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
+                    <button onclick="checkAuth()" class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
                 </div>
             </div>
         </div>
-        <!-- Item 2 -->
         <div class="glass-card rounded-2xl overflow-hidden group">
-            <div class="h-40 bg-slate-800 relative">
-                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80" alt="Game ID" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="h-40 bg-slate-800 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80" alt="Game ID" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
             </div>
             <div class="p-4">
-                <h4 class="font-bold text-sm mb-1 uppercase">Genshin Impact - AR 55</h4>
-                <p class="text-[10px] text-slate-500 mb-3">Characters: Raiden C2, Kazuha...</p>
-                <div class="flex justify-between items-center">
+                <h4 class="font-bold text-sm mb-1 uppercase">Genshin - AR 55</h4>
+                <div class="flex justify-between items-center mt-3">
                     <span class="font-orbitron font-bold text-cyan-400">890 ฿</span>
-                    <button class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
+                    <button onclick="checkAuth()" class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
                 </div>
             </div>
-        </div>
-        <!-- Item 3, 4 ... -->
-    </div>
-</section>
-
-<!-- Top-up & Server Section -->
-<section class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
-    <!-- Top-up Card -->
-    <div id="topup" class="glass-card rounded-[2rem] p-8 border-t-4 border-purple-500">
-        <h3 class="text-xl font-orbitron font-bold mb-6 text-purple-400">Mobile Top-up</h3>
-        <div class="space-y-4">
-            <div class="flex gap-4">
-                <input type="text" placeholder="เบอร์โทรศัพท์ / ID เกม" class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
-                <select class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm">
-                    <option>RoV (Garena)</option>
-                    <option>Free Fire</option>
-                    <option>PUBG Mobile</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold">50 ฿</button>
-                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold">100 ฿</button>
-                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold font-orbitron text-cyan-400 bg-cyan-400/10 border-cyan-400/30">MAX</button>
-            </div>
-            <button class="w-full btn-action py-4 rounded-xl font-bold uppercase tracking-widest mt-4">เติมเงินทันที</button>
-        </div>
-    </div>
-
-    <!-- DDC Server Card -->
-    <div id="server" class="glass-card rounded-[2rem] p-8 border-t-4 border-cyan-400">
-        <div class="flex justify-between items-start mb-6">
-            <h3 class="text-xl font-orbitron font-bold text-cyan-400">DDC Server Rental</h3>
-            <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full border border-emerald-500/30">ONLINE</span>
-        </div>
-        <div class="space-y-4">
-            <div class="bg-slate-900/50 p-4 rounded-2xl flex items-center justify-between border border-white/5">
-                <div>
-                    <p class="text-xs font-bold uppercase">DDC Lite Node</p>
-                    <p class="text-[10px] text-slate-500">2 vCPU / 4GB RAM / 40GB SSD</p>
-                </div>
-                <div class="text-right">
-                    <p class="font-orbitron font-bold">250 ฿<span class="text-[10px] text-slate-500">/mo</span></p>
-                </div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-2xl flex items-center justify-between border border-cyan-400/30 bg-cyan-400/5">
-                <div>
-                    <p class="text-xs font-bold uppercase text-cyan-400">DDC Pro Gaming</p>
-                    <p class="text-[10px] text-slate-500">4 vCPU / 16GB RAM / 100GB SSD</p>
-                </div>
-                <div class="text-right">
-                    <p class="font-orbitron font-bold">750 ฿<span class="text-[10px] text-slate-500">/mo</span></p>
-                </div>
-            </div>
-            <button class="w-full border border-cyan-500/30 hover:bg-cyan-500/10 py-4 rounded-xl font-bold uppercase tracking-widest transition">เลือกสเปกเครื่อง</button>
         </div>
     </div>
 </section>
@@ -219,17 +318,15 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
     <div class="glass-card rounded-[3rem] p-10 text-center relative overflow-hidden">
         <div class="relative z-10">
             <h2 class="text-3xl font-orbitron font-bold mb-2 tracking-tighter uppercase">Lucky <span class="text-cyan-400">Wheel</span></h2>
-            <p class="text-slate-400 text-sm mb-10">สุ่มรางวัลใหญ่ได้ทุกวัน เพียง 20 ฿ ต่อการหมุน</p>
+            <p class="text-slate-400 text-sm mb-10">สุ่มรางวัลใหญ่ได้ทุกวันกับ NexoraShop</p>
             
             <div class="wheel-container">
                 <div class="wheel-pointer"></div>
                 <div id="main-wheel" class="wheel"></div>
             </div>
 
-            <button onclick="spinWheel()" id="spin-btn" class="btn-action mt-12 px-12 py-4 rounded-2xl font-bold font-orbitron tracking-[0.2em] text-lg">SPIN NOW</button>
+            <button onclick="checkAuth(spinWheel)" id="spin-btn" class="btn-action mt-12 px-12 py-4 rounded-2xl font-bold font-orbitron tracking-[0.2em] text-lg">SPIN NOW</button>
         </div>
-        
-        <!-- Decoration -->
         <div class="absolute top-[-50px] right-[-50px] w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full"></div>
         <div class="absolute bottom-[-50px] left-[-50px] w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full"></div>
     </div>
@@ -237,40 +334,24 @@ $credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินใน�
 
 <!-- Footer -->
 <footer class="py-10 border-t border-white/5 text-center">
-    <p class="text-[10px] font-orbitron font-bold text-slate-600 tracking-widest uppercase">© 2026 DDC STORE - ALL RIGHTS RESERVED</p>
+    <p class="text-[10px] font-orbitron font-bold text-slate-600 tracking-widest uppercase">© 2026 NEXORASHOP - ALL RIGHTS RESERVED</p>
 </footer>
 
 <script>
     let isSpinning = false;
-
     function spinWheel() {
         if (isSpinning) return;
-        
         const wheel = document.getElementById('main-wheel');
         const spinBtn = document.getElementById('spin-btn');
-        
         isSpinning = true;
         spinBtn.disabled = true;
         spinBtn.style.opacity = '0.5';
-
-        // สุ่มองศา (อย่างน้อย 5 รอบ + สุ่มจุดหยุด)
         const randomDegree = Math.floor(Math.random() * 360) + (360 * 5);
         wheel.style.transform = `rotate(${randomDegree}deg)`;
-
         setTimeout(() => {
             isSpinning = false;
             spinBtn.disabled = false;
             spinBtn.style.opacity = '1';
-            
-            // แสดงผลลัพธ์ (ตัวอย่าง)
-            const actualDegree = randomDegree % 360;
-            let prize = "";
-            if (actualDegree >= 0 && actualDegree < 45) prize = "DDC Server 1 Day";
-            else if (actualDegree >= 45 && actualDegree < 90) prize = "10 Credit";
-            else prize = "Try Again!";
-            
-            // ใช้ UI แทน Alert ตามกฎ
-            console.log("Prize: " + prize);
         }, 4000);
     }
 </script>
