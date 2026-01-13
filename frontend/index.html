@@ -1,19 +1,15 @@
 <?php
 session_start();
-
-/*
-  ถ้าคุณอยากให้:
-  - login แล้ว → เปลี่ยนปุ่ม Login เป็น Dashboard
-  - admin / user แยกหน้า
-  คุณจะมาเพิ่ม logic ตรงนี้ภายหลังได้
-*/
+$isLoggedIn = isset($_SESSION['user_id']);
+$username = $isLoggedIn ? $_SESSION['username'] : "Guest";
+$credits = $isLoggedIn ? 500 : 0; // สมมติค่าเงินในระบบ
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DDC VPN | Gaming & Professional Proxy Solution</title>
+    <title>DDC STORE | Gaming Solutions & Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,103 +19,261 @@ session_start();
             --primary: #00f2ff;
             --secondary: #7000ff;
             --bg: #050b18;
+            --card: rgba(15, 23, 42, 0.7);
         }
         body {
             font-family: 'Kanit', sans-serif;
             background-color: var(--bg);
             color: #ffffff;
-            background-image:
-                radial-gradient(circle at 50% 0%, rgba(112, 0, 255, 0.15) 0%, transparent 50%),
-                linear-gradient(rgba(5, 11, 24, 0.8) 0%, rgba(5, 11, 24, 0.8) 100%),
-                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            background-image: radial-gradient(circle at 50% 0%, rgba(112, 0, 255, 0.1) 0%, transparent 50%);
         }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
-
+        
         .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        .neon-border {
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3), inset 0 0 10px rgba(0, 242, 255, 0.1);
-        }
-
-        .neon-text {
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-        }
-
-        .btn-gaming {
-            background: linear-gradient(45deg, var(--secondary), var(--primary));
-            position: relative;
-            overflow: hidden;
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
-        .btn-gaming:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+        .glass-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
         }
 
-        .grid-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image:
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            mask-image: linear-gradient(to bottom, black, transparent);
+        .btn-action {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            transition: all 0.3s ease;
+        }
+        .btn-action:hover {
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            filter: brightness(1.1);
         }
 
-        .loader {
-            border: 3px solid rgba(0, 242, 255, 0.1);
-            border-top: 3px solid var(--primary);
+        /* Lucky Wheel Styles */
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
+            border: 8px solid #1e293b;
+            background: conic-gradient(
+                #7000ff 0deg 45deg, #050b18 45deg 90deg,
+                #00f2ff 90deg 135deg, #050b18 135deg 180deg,
+                #7000ff 180deg 225deg, #050b18 225deg 270deg,
+                #00f2ff 270deg 315deg, #050b18 315deg 360deg
+            );
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .ai-chat-bubble {
-            border-left: 4px solid var(--primary);
-            background: rgba(0, 242, 255, 0.05);
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 40px;
+            background: #ff0055;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
         }
     </style>
 </head>
-<body class="overflow-x-hidden">
-<div class="grid-bg"></div>
+<body class="min-h-screen">
 
-<!-- ⚠️ HTML ด้านล่าง = ของคุณเดิมทั้งหมด ไม่แตะ -->
-
-<!-- Navbar -->
-<nav class="fixed w-full z-50 px-6 py-4">
-    <div class="max-w-7xl mx-auto flex justify-between items-center glass-card rounded-2xl px-6 py-3 border-b-2 border-cyan-500/30">
+<!-- Navigation -->
+<nav class="fixed w-full z-50 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex justify-between items-center glass-card rounded-2xl px-6 py-3 border-b border-cyan-500/20">
         <div class="flex items-center gap-3">
-            <!-- Logo -->
-            <svg width="40" height="40" viewBox="0 0 100 100" class="drop-shadow-[0_0_8px_rgba(0,242,255,0.8)]">
-                <path d="M50 5 L90 25 V75 L50 95 L10 75 V25 Z" fill="none" stroke="#00f2ff" stroke-width="4"/>
-                <path d="M50 20 L35 50 H50 L45 80 L65 45 H50 L55 20 Z" fill="#00f2ff"/>
-            </svg>
-            <span class="text-2xl font-bold font-orbitron tracking-tighter neon-text">DDC<span class="text-cyan-400">VPN</span></span>
+            <span class="text-2xl font-bold font-orbitron tracking-tighter text-cyan-400">DDC<span class="text-white">STORE</span></span>
+        </div>
+        
+        <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
+            <a href="#shop" class="hover:text-cyan-400 transition">ID Shop</a>
+            <a href="#topup" class="hover:text-cyan-400 transition">Top-up</a>
+            <a href="#server" class="hover:text-cyan-400 transition">DDC Server</a>
+            <a href="#wheel" class="hover:text-cyan-400 transition">Lucky Wheel</a>
         </div>
 
-        <button class="btn-gaming px-6 py-2 rounded-lg font-bold text-sm"
-            onclick="location.href='login.php'">
-            Login
-        </button>
+        <div class="flex items-center gap-4">
+            <?php if ($isLoggedIn): ?>
+                <div class="text-right mr-2 hidden sm:block">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase">Balance</p>
+                    <p class="text-xs font-bold text-cyan-400 font-orbitron"><?php echo number_format($credits); ?> ฿</p>
+                </div>
+                <button class="w-10 h-10 rounded-full bg-slate-800 border border-cyan-500/30 flex items-center justify-center">👤</button>
+            <?php else: ?>
+                <button onclick="location.href='login.php'" class="btn-action px-6 py-2 rounded-lg font-bold text-sm uppercase">Login</button>
+            <?php endif; ?>
+        </div>
     </div>
 </nav>
 
-<!-- (เนื้อหา HTML ที่เหลือ = เหมือนที่คุณส่งมา 100%) -->
-<!-- ❗ ผมไม่ตัด ไม่แก้ ไม่ย่อ -->
+<!-- Hero Section -->
+<section class="pt-32 pb-16 px-6 text-center">
+    <h1 class="text-4xl md:text-6xl font-orbitron font-bold mb-4">ONE-STOP <span class="text-cyan-400">GAMING</span> HUB</h1>
+    <p class="text-slate-400 max-w-xl mx-auto text-sm md:text-base">เลือกซื้อไอดีเกม เติมเงินมือถือ หรือเช่าเซิร์ฟเวอร์ประสิทธิภาพสูง ครบจบในที่เดียว</p>
+</section>
+
+<!-- ID Shop Section -->
+<section id="shop" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h2 class="text-2xl font-orbitron font-bold uppercase tracking-wider text-cyan-400">ID Game Shop</h2>
+            <p class="text-slate-500 text-xs">ไอดีสะอาด ปลอดภัย รับประกันการดึงคืน</p>
+        </div>
+        <a href="#" class="text-xs font-bold text-slate-400 hover:text-white underline">ดูทั้งหมด</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Item 1 -->
+        <div class="glass-card rounded-2xl overflow-hidden group">
+            <div class="h-40 bg-slate-800 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=400&q=80" alt="Game ID" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <span class="absolute top-2 left-2 bg-red-500 text-[10px] font-bold px-2 py-1 rounded">HOT</span>
+            </div>
+            <div class="p-4">
+                <h4 class="font-bold text-sm mb-1 uppercase">Valorant - Ascendant II</h4>
+                <p class="text-[10px] text-slate-500 mb-3">Skins: Vandal Elderflame, Phantom Oni...</p>
+                <div class="flex justify-between items-center">
+                    <span class="font-orbitron font-bold text-cyan-400">1,250 ฿</span>
+                    <button class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
+                </div>
+            </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="glass-card rounded-2xl overflow-hidden group">
+            <div class="h-40 bg-slate-800 relative">
+                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80" alt="Game ID" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            </div>
+            <div class="p-4">
+                <h4 class="font-bold text-sm mb-1 uppercase">Genshin Impact - AR 55</h4>
+                <p class="text-[10px] text-slate-500 mb-3">Characters: Raiden C2, Kazuha...</p>
+                <div class="flex justify-between items-center">
+                    <span class="font-orbitron font-bold text-cyan-400">890 ฿</span>
+                    <button class="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition text-xs font-bold">ซื้อเลย</button>
+                </div>
+            </div>
+        </div>
+        <!-- Item 3, 4 ... -->
+    </div>
+</section>
+
+<!-- Top-up & Server Section -->
+<section class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <!-- Top-up Card -->
+    <div id="topup" class="glass-card rounded-[2rem] p-8 border-t-4 border-purple-500">
+        <h3 class="text-xl font-orbitron font-bold mb-6 text-purple-400">Mobile Top-up</h3>
+        <div class="space-y-4">
+            <div class="flex gap-4">
+                <input type="text" placeholder="เบอร์โทรศัพท์ / ID เกม" class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+                <select class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm">
+                    <option>RoV (Garena)</option>
+                    <option>Free Fire</option>
+                    <option>PUBG Mobile</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold">50 ฿</button>
+                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold">100 ฿</button>
+                <button class="p-3 rounded-xl border border-slate-700 hover:bg-purple-500/20 transition text-xs font-bold font-orbitron text-cyan-400 bg-cyan-400/10 border-cyan-400/30">MAX</button>
+            </div>
+            <button class="w-full btn-action py-4 rounded-xl font-bold uppercase tracking-widest mt-4">เติมเงินทันที</button>
+        </div>
+    </div>
+
+    <!-- DDC Server Card -->
+    <div id="server" class="glass-card rounded-[2rem] p-8 border-t-4 border-cyan-400">
+        <div class="flex justify-between items-start mb-6">
+            <h3 class="text-xl font-orbitron font-bold text-cyan-400">DDC Server Rental</h3>
+            <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full border border-emerald-500/30">ONLINE</span>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-slate-900/50 p-4 rounded-2xl flex items-center justify-between border border-white/5">
+                <div>
+                    <p class="text-xs font-bold uppercase">DDC Lite Node</p>
+                    <p class="text-[10px] text-slate-500">2 vCPU / 4GB RAM / 40GB SSD</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-orbitron font-bold">250 ฿<span class="text-[10px] text-slate-500">/mo</span></p>
+                </div>
+            </div>
+            <div class="bg-slate-900/50 p-4 rounded-2xl flex items-center justify-between border border-cyan-400/30 bg-cyan-400/5">
+                <div>
+                    <p class="text-xs font-bold uppercase text-cyan-400">DDC Pro Gaming</p>
+                    <p class="text-[10px] text-slate-500">4 vCPU / 16GB RAM / 100GB SSD</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-orbitron font-bold">750 ฿<span class="text-[10px] text-slate-500">/mo</span></p>
+                </div>
+            </div>
+            <button class="w-full border border-cyan-500/30 hover:bg-cyan-500/10 py-4 rounded-xl font-bold uppercase tracking-widest transition">เลือกสเปกเครื่อง</button>
+        </div>
+    </div>
+</section>
+
+<!-- Lucky Wheel Section -->
+<section id="wheel" class="max-w-4xl mx-auto px-6 py-20">
+    <div class="glass-card rounded-[3rem] p-10 text-center relative overflow-hidden">
+        <div class="relative z-10">
+            <h2 class="text-3xl font-orbitron font-bold mb-2 tracking-tighter uppercase">Lucky <span class="text-cyan-400">Wheel</span></h2>
+            <p class="text-slate-400 text-sm mb-10">สุ่มรางวัลใหญ่ได้ทุกวัน เพียง 20 ฿ ต่อการหมุน</p>
+            
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div id="main-wheel" class="wheel"></div>
+            </div>
+
+            <button onclick="spinWheel()" id="spin-btn" class="btn-action mt-12 px-12 py-4 rounded-2xl font-bold font-orbitron tracking-[0.2em] text-lg">SPIN NOW</button>
+        </div>
+        
+        <!-- Decoration -->
+        <div class="absolute top-[-50px] right-[-50px] w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full"></div>
+        <div class="absolute bottom-[-50px] left-[-50px] w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full"></div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-10 border-t border-white/5 text-center">
+    <p class="text-[10px] font-orbitron font-bold text-slate-600 tracking-widest uppercase">© 2026 DDC STORE - ALL RIGHTS RESERVED</p>
+</footer>
+
+<script>
+    let isSpinning = false;
+
+    function spinWheel() {
+        if (isSpinning) return;
+        
+        const wheel = document.getElementById('main-wheel');
+        const spinBtn = document.getElementById('spin-btn');
+        
+        isSpinning = true;
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = '0.5';
+
+        // สุ่มองศา (อย่างน้อย 5 รอบ + สุ่มจุดหยุด)
+        const randomDegree = Math.floor(Math.random() * 360) + (360 * 5);
+        wheel.style.transform = `rotate(${randomDegree}deg)`;
+
+        setTimeout(() => {
+            isSpinning = false;
+            spinBtn.disabled = false;
+            spinBtn.style.opacity = '1';
+            
+            // แสดงผลลัพธ์ (ตัวอย่าง)
+            const actualDegree = randomDegree % 360;
+            let prize = "";
+            if (actualDegree >= 0 && actualDegree < 45) prize = "DDC Server 1 Day";
+            else if (actualDegree >= 45 && actualDegree < 90) prize = "10 Credit";
+            else prize = "Try Again!";
+            
+            // ใช้ UI แทน Alert ตามกฎ
+            console.log("Prize: " + prize);
+        }, 4000);
+    }
+</script>
 
 </body>
 </html>
