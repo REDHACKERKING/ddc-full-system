@@ -5,7 +5,7 @@
 <button onclick=reg()>Register</button>
 <script>
 function reg(){
-fetch("http://localhost:3000/api/register",{
+fetch("https://ddc-backend-cen0.onrender.com/api/register",{
 method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({username:u.value,password:p.value})
 }).then(()=>location.href="login.html");
