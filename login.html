@@ -1,0 +1,16 @@
+
+<h2>Login</h2>
+<input id=u placeholder=username>
+<input id=p type=password placeholder=password>
+<button onclick=login()>Login</button>
+<script>
+function login(){
+fetch("http://localhost:3000/api/login",{
+method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username:u.value,password:p.value})
+}).then(r=>r.json()).then(d=>{
+localStorage.token=d.token;localStorage.role=d.role;
+location.href=d.role==="admin"?"admin.html":"dashboard.html";
+});
+}
+</script>
