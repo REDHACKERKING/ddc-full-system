@@ -4,7 +4,7 @@
 <div id=o></div>
 <script>
 function load(){
-fetch("http://localhost:3000/api/admin/orders",{
+fetch("https://ddc-backend-cen0.onrender.com/",{
 headers:{Authorization:"Bearer "+localStorage.token}
 }).then(r=>r.json()).then(d=>{
 o.innerHTML=d.map(x=>`
@@ -16,12 +16,12 @@ Order #${x.id}
 });
 }
 function c(id){
-fetch("http://localhost:3000/api/admin/orders/"+id+"/confirm",{
+fetch("https://ddc-backend-cen0.onrender.com/"+id+"/confirm",{
 method:"PATCH",headers:{Authorization:"Bearer "+localStorage.token}
 }).then(load);
 }
 function r(id){
-fetch("http://localhost:3000/api/admin/orders/"+id+"/reject",{
+fetch("https://ddc-backend-cen0.onrender.com/"+id+"/reject",{
 method:"PATCH",headers:{Authorization:"Bearer "+localStorage.token}
 }).then(load);
 }
